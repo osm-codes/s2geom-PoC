@@ -9,11 +9,11 @@ This extension makes it easy to convert GIS data to S2 data types &mdash; S2 cel
 To use, you must [install plpython3u](https://www.enterprisedb.com/edb-docs/d/edb-postgres-advanced-server/installation-getting-started/installation-guide/9.6/EDB_Postgres_Advanced_Server_Installation_Guide.1.60.html) (the PostgreSQL PL/Phyton3 language) and S2Sphere (the python3 exstension) on your Postgresql server.
 
 ```
-sudo apt-get install postgresql-plpython3-9.6
+sudo apt install postgresql-plpython3 # check specific, like 3-10
 sudo pip3 install s2sphere
 ```
 
-To install the extension, clone the respository on your server, then:
+To install the extension, clone the [AfieldTrails/s2-postgis](https://github.com/AfieldTrails/s2-postgis) respository (in the futurure this will be adapted) on your server, then:
 
 ```
 sudo make install && make installcheck
@@ -23,7 +23,7 @@ Finally, to actually use the extension:
 
 ```
 CREATE LANGUAGE plpython3u;
-CREATE EXTENSION s2;
+CREATE EXTENSION s2; -- in the future s2geom_poc
 
 SELECT s2_cellid_from_latlng(10.1234, -72.1234);
 ```
@@ -36,8 +36,8 @@ Either representation will work well for sorted indices. I generally prefer the 
 
 If you're looking at the implementation, there is a dance around converting the unsigned representation used by Python3 and S2sphere and the signed PostgreSQL implementation.
 
-## s2-postgis differences
-Listing changes as doing commits:
+## S2-postgis differences
+Listing changes from original project, as doing commits:
 
 1. README, file names and formating SQL code.
 
