@@ -143,6 +143,7 @@ AS $f$
   steradians = s2sphere.Cell( id ).exact_area()
   return (steradians*kEarthRadiusMeters*kEarthRadiusMeters) if ret_meters else steradians
 $f$ LANGUAGE plpython3u IMMUTABLE;
+COMMENT ON function s2_cellid_exact_area IS 'Exact area in steradians of a cell-ID, and approximated (better for small cells) in meters';
 
 
 --
@@ -222,6 +223,8 @@ CREATE or replace FUNCTION s2_token_exact_area(token text, ret_meters boolean DE
   steradians = s2sphere.Cell( s2sphere.CellId.from_token(token) ).exact_area()
   return (steradians*kEarthRadiusMeters*kEarthRadiusMeters) if ret_meters else steradians
 $f$ LANGUAGE plpython3u IMMUTABLE;
+COMMENT ON function s2_cellid_exact_area IS 'Exact area in steradians of a cell-Token, and approximated (better for small cells) in meters';
+
 
 CREATE or replace FUNCTION s2_token_get_vertex(token text, k int,  OUT r float[])
 AS $f$
@@ -243,4 +246,3 @@ CREATE or replace FUNCTION s2_token_children_array(token text) RETURNS text[]
 AS $wrap$
   SELECT array_agg(x) FROM s2_token_children(token) t(x)
 $wrap$ LANGUAGE SQL IMMUTABLE;
-

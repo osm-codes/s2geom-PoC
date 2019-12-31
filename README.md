@@ -2,6 +2,7 @@
 
 Proof of Concept (PoC) for a PostgreSQL implementation of the [S2 Geometry Library](http://S2geometry.io), based on [AfieldTrails/s2-postgis](https://github.com/AfieldTrails/s2-postgis) and [sidewalklabs/s2sphere](https://github.com/sidewalklabs/s2sphere). This library not need PostGIS to run, but in general PostGIS will be used as "context" for geographical applications and library's test.
 <!-- S2 cell encoding using the python s2sphere library-->
+
 ## Installation
 
 This extension makes it easy to convert GIS data to S2 data types &mdash; S2 cell identifiers (S2cellID's) and S2cellID tokens in particular.
@@ -27,6 +28,9 @@ CREATE EXTENSION s2; -- in the future s2geom_poc
 
 SELECT s2_cellid_from_latlng(10.1234, -72.1234);
 ```
+
+### Testing ###
+See [`/test` folder](/test/) and instructions. Run all tests for check your installation and for regression testing when modifing [SQL code](s2geom-main.sql).
 
 ## Types
 
