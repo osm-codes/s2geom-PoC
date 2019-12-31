@@ -136,7 +136,10 @@ $f$ LANGUAGE plpython3u IMMUTABLE;
 CREATE or replace FUNCTION s2_cellid_exact_area(id0 bigint) RETURNS float8
 AS $f$
   import s2sphere
-  return s2sphere.Cell( s2sphere.CellId(id0) ).exact_area()
+  id = s2sphere.CellId(
+       int.from_bytes( id0.to_bytes(8,'big',signed=True), 'big', signed=False )
+  )
+  return s2sphere.Cell( id ).exact_area()
 $f$ LANGUAGE plpython3u IMMUTABLE;
 
 
