@@ -13,13 +13,17 @@ SELECT s2_cellid_is_leaf( s2_cellid_from_latlng(-23.55041,-46.63394) ); --  t
 
 SELECT 1+i*5 as level,
        s2_cellid_exact_area( s2_cellid_parent( s2_cellid_from_latlng(-23.55041,-46.63394), 1+i*5) ) "pt1_area_byID",
-       s2_cellid_exact_area( s2_cellid_parent( s2_cellid_from_latlng(15,15), 1+i*5) ) "pt2_area_byID"
-FROM generate_series(0,4) t(i);
+       s2_cellid_exact_area( s2_cellid_parent( s2_cellid_from_latlng(15,15), 1+i*5) ) "pt2_area_byID",
+       s2_cellid_exact_area( s2_cellid_parent( s2_cellid_from_latlng(-23.55041,-46.63394), 1+i*5) ) "pt1_metricArea",
+       s2_cellid_exact_area( s2_cellid_parent( s2_cellid_from_latlng(15,15), 1+i*5) ) "pt2_metricArea"
+FROM generate_series(0,5) t(i);
 
 SELECT 1+i*5 as level,
        s2_token_exact_area( s2_token_parent( s2_token_from_latlng(-23.55041,-46.63394), 1+i*5) ) "pt1_area_byToken",
-       s2_token_exact_area( s2_token_parent( s2_token_from_latlng(15,15), 1+i*5) ) "pt2_area_byToken"
-FROM generate_series(0,4) t(i);
+       s2_token_exact_area( s2_token_parent( s2_token_from_latlng(15,15), 1+i*5) ) "pt2_area_byToken",
+       s2_token_exact_area( s2_token_parent( s2_token_from_latlng(-23.55041,-46.63394), 1+i*5), true ) "pt1_metricArea",
+       s2_token_exact_area( s2_token_parent( s2_token_from_latlng(15,15), 1+i*5), true ) "pt2_metricArea"
+FROM generate_series(0,5) t(i);
 
 
 SELECT 5+i*4 as level, token, s2_token_exact_area( s2_token_parent(token,1+i*2) )

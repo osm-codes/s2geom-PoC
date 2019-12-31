@@ -133,13 +133,15 @@ AS $f$
   return id_a.intersects(id_b)
 $f$ LANGUAGE plpython3u IMMUTABLE;
 
-CREATE or replace FUNCTION s2_cellid_exact_area(id0 bigint) RETURNS float8
+CREATE or replace FUNCTION s2_cellid_exact_area(id0 bigint, ret_meters boolean DEFAULT false) RETURNS float8
 AS $f$
   import s2sphere
   id = s2sphere.CellId(
        int.from_bytes( id0.to_bytes(8,'big',signed=True), 'big', signed=False )
   )
-  return s2sphere.Cell( id ).exact_area()
+  kEarthRadiusMeters =  6371010
+  steradians = s2sphere.Cell( id ).exact_area()
+  return (steradians*kEarthRadiusMeters*kEarthRadiusMeters) if ret_meters else steradians
 $f$ LANGUAGE plpython3u IMMUTABLE;
 
 
@@ -214,16 +216,18 @@ $f$ LANGUAGE plpython3u IMMUTABLE;
 
 -- new, from 2019 changes:
 
-CREATE or replace FUNCTION s2_token_exact_area(token text) RETURNS float8 AS $f$
+CREATE or replace FUNCTION s2_token_exact_area(token text, ret_meters boolean DEFAULT false) RETURNS float8 AS $f$
   import s2sphere
-  return s2sphere.Cell( s2sphere.CellId.from_token(token) ).exact_area()
+  kEarthRadiusMeters =  6371010
+  steradians = s2sphere.Cell( s2sphere.CellId.from_token(token) ).exact_area()
+  return (steradians*kEarthRadiusMeters*kEarthRadiusMeters) if ret_meters else steradians
 $f$ LANGUAGE plpython3u IMMUTABLE;
 
 CREATE or replace FUNCTION s2_token_get_vertex(token text, k int,  OUT r float[])
 AS $f$
   import s2sphere
   point = s2sphere.Cell( s2sphere.CellId.from_token(token) ).get_vertex(k)
-  return ( point[0],  point[1],  point[2])
+  return ( point[0],  point[1],  point[2]) # a point on the unit sphere
 $f$ LANGUAGE plpython3u IMMUTABLE;
 -- but ideal is GeoJSON, see clues at https://github.com/google/s2-geometry-library-java/issues/5
 
@@ -239,3 +243,4 @@ CREATE or replace FUNCTION s2_token_children_array(token text) RETURNS text[]
 AS $wrap$
   SELECT array_agg(x) FROM s2_token_children(token) t(x)
 $wrap$ LANGUAGE SQL IMMUTABLE;
+
